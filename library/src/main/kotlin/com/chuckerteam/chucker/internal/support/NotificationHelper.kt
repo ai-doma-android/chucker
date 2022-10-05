@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.LongSparseArray
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationCompat.PRIORITY_MAX
 import androidx.core.content.ContextCompat
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.api.Chucker
@@ -89,6 +90,7 @@ internal class NotificationHelper(val context: Context) {
                 NotificationCompat.Builder(context, TRANSACTIONS_CHANNEL_ID)
                     .setContentIntent(transactionsScreenIntent)
                     .setLocalOnly(true)
+                    .setPriority(PRIORITY_MAX)
                     .setSmallIcon(R.drawable.chucker_ic_transaction_notification)
                     .setColor(ContextCompat.getColor(context, R.color.chucker_color_primary))
                     .setContentTitle(context.getString(R.string.chucker_http_notification_title))

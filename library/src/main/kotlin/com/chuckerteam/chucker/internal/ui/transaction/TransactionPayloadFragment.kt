@@ -1,25 +1,27 @@
 package com.chuckerteam.chucker.internal.ui.transaction
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerFragmentTransactionPayloadBinding
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -31,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
 import java.io.IOException
+
 
 internal class TransactionPayloadFragment :
     Fragment(), SearchView.OnQueryTextListener {
@@ -64,7 +67,20 @@ internal class TransactionPayloadFragment :
     }
 
     private lateinit var payloadBinding: ChuckerFragmentTransactionPayloadBinding
-    private val payloadAdapter = TransactionBodyAdapter()
+    private val payloadAdapter = TransactionBodyAdapter{
+        if(payloadType == PayloadType.REQUEST){
+            val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
+            val clip = ClipData.newPlainText("body", viewModel.transaction.value?.getFormattedRequestBody())
+            clipboard?.setPrimaryClip(clip)
+            Toast.makeText(context,"Body copied to clipboard", Toast.LENGTH_SHORT).show()
+        }
+        if (payloadType == PayloadType.RESPONSE){
+            val clipboard = getSystemService(requireContext(), ClipboardManager::class.java)
+            val clip = ClipData.newPlainText("body", viewModel.transaction.value?.getFormattedResponseBody())
+            clipboard?.setPrimaryClip(clip)
+            Toast.makeText(context,"Body copied to clipboard", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private var backgroundSpanColor: Int = Color.YELLOW
     private var foregroundSpanColor: Int = Color.RED

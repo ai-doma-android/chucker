@@ -14,7 +14,7 @@ def buildVersionCode = { ->
 def getVersionName = { ->
     //def autoVersion = githubProperties['package.version'].toInteger() + 1
     //githubProperties['package.version'] = autoVersion.toString()
-    return "1.0.13" // Replace with version Name
+    return "1.0.18" // Replace with version Name
 }
 
 def getArtificatId = { ->

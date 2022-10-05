@@ -20,7 +20,7 @@ import com.chuckerteam.chucker.internal.support.highlightWithDefinedColors
  * We're using a [RecyclerView] to show the content of the body line by line to do not affect
  * performances when loading big payloads.
  */
-internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
+internal class TransactionBodyAdapter(private val onCLick: ()->Unit) : RecyclerView.Adapter<TransactionPayloadViewHolder>() {
 
     private val items = arrayListOf<TransactionPayloadItem>()
 
@@ -45,7 +45,7 @@ internal class TransactionBodyAdapter : RecyclerView.Adapter<TransactionPayloadV
             }
             TYPE_BODY_LINE -> {
                 val bodyItemBinding = ChuckerTransactionItemBodyLineBinding.inflate(inflater, parent, false)
-                TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding)
+                TransactionPayloadViewHolder.BodyLineViewHolder(bodyItemBinding, onCLick = onCLick)
             }
             else -> {
                 val imageItemBinding = ChuckerTransactionItemImageBinding.inflate(inflater, parent, false)
@@ -117,11 +117,15 @@ internal sealed class TransactionPayloadViewHolder(view: View) : RecyclerView.Vi
     }
 
     internal class BodyLineViewHolder(
-        private val bodyBinding: ChuckerTransactionItemBodyLineBinding
+        private val bodyBinding: ChuckerTransactionItemBodyLineBinding,
+        private val onCLick: ()->Unit
     ) : TransactionPayloadViewHolder(bodyBinding.root) {
         override fun bind(item: TransactionPayloadItem) {
             if (item is TransactionPayloadItem.BodyLineItem) {
                 bodyBinding.bodyLine.text = item.line
+                bodyBinding.bodyLine.setOnClickListener {
+                    onCLick()
+                }
             }
         }
     }
