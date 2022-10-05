@@ -1,5 +1,6 @@
 package com.chuckerteam.chucker.internal.support
 
+import android.util.Log
 import com.chuckerteam.chucker.api.BodyDecoder
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
@@ -99,6 +100,10 @@ internal class ResponseProcessor(
             transaction.responseBody = decodedContent
             transaction.isResponseBodyEncoded = decodedContent == null
         }
+        Log.d("ResponseProcessor", "obtainGraphQlErrorStringIfExist")
+        transaction.obtainGraphQlErrorStringIfExist()
+        Log.d("ResponseProcessor", transaction.graphQlError.orEmpty())
+
     }
 
     private fun decodePayload(response: Response, body: ByteString) = bodyDecoders.asSequence()

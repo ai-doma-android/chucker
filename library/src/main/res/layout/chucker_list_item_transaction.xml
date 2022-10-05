@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/code"
-        android:layout_width="@dimen/chucker_item_size"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingEnd="@dimen/chucker_doub_grid"
@@ -32,38 +32,45 @@
         android:id="@+id/path"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
         android:ellipsize="end"
         android:maxLines="4"
         android:textAppearance="@style/Chucker.TextAppearance.ListItem"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.125"
         app:layout_constraintStart_toEndOf="@+id/code"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/graphqlPath"
         tools:text="GET /path/to/some/resource?goes=here" />
 
     <TextView
         android:id="@+id/graphqlPath"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/chucker_half_grid"
+        android:layout_marginStart="4dp"
         android:ellipsize="end"
         android:maxLines="2"
+        android:textColor="#9440e8"
+        android:textSize="16sp"
+        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ssl"
-        app:layout_constraintTop_toBottomOf="@+id/path"
+        app:layout_constraintStart_toEndOf="@+id/graphqlIcon"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="getBatchDetails"
         tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/graphqlIcon"
-        android:layout_width="@dimen/chucker_doub_grid"
-        android:layout_height="@dimen/chucker_doub_grid"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="3dp"
         android:contentDescription="@string/chucker_ssl"
         android:src="@drawable/chucker_ic_graphql"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/graphqlPath"
         app:layout_constraintStart_toStartOf="@+id/ssl"
         app:layout_constraintTop_toTopOf="@+id/graphqlPath"
+        app:layout_constraintVertical_bias="0.9"
         tools:visibility="visible" />
 
     <TextView
@@ -75,7 +82,7 @@
         android:maxLines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ssl"
-        app:layout_constraintTop_toBottomOf="@+id/graphqlPath"
+        app:layout_constraintTop_toBottomOf="@+id/path"
         app:layout_goneMarginStart="0dp"
         tools:text="example.com" />
 

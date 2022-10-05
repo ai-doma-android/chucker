@@ -171,7 +171,7 @@ public class ChuckerInterceptor private constructor(
     }
 
     private companion object {
-        private const val MAX_CONTENT_LENGTH = 250_000L
+        private const val MAX_CONTENT_LENGTH = 500_000L
 
         private val BUILT_IN_DECODERS = listOf(PlainTextDecoder)
     }

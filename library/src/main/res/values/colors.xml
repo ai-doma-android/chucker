@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="chucker_color_primary">#01579b</color>
-    <color name="chucker_color_primary_variant">#002f6c</color>
+    <color name="chucker_color_primary">#39CE66</color>
+    <color name="chucker_color_primary_variant">#39CE66</color>
     <color name="chucker_color_background">#ffffff</color>
     <color name="chucker_color_surface">#ffffff</color>
     <color name="chucker_color_secondary">#009E09</color>
@@ -18,6 +18,7 @@
     <color name="chucker_status_500">#B71C1C</color>
     <color name="chucker_status_400">#FF9800</color>
     <color name="chucker_status_300">#0D47A1</color>
+    <color name="chucker_qcl_success">#9440e8</color>
 
     <color name="chucker_background_span_color">#ffffff00</color>
     <color name="chucker_foreground_span_color">#ffff0000</color>

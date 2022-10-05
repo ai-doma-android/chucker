@@ -35,6 +35,7 @@ internal class TransactionAdapter internal constructor(
     private val color500: Int = ContextCompat.getColor(context, R.color.chucker_status_500)
     private val color400: Int = ContextCompat.getColor(context, R.color.chucker_status_400)
     private val color300: Int = ContextCompat.getColor(context, R.color.chucker_status_300)
+    private val colorGqlSuccess: Int = ContextCompat.getColor(context, R.color.chucker_qcl_success)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val viewBinding = ChuckerListItemTransactionBinding.inflate(
@@ -67,7 +68,7 @@ internal class TransactionAdapter internal constructor(
             transactionId = transaction.id
 
             itemBinding.apply {
-                displayGraphQlFields(transaction.graphQlOperationName, transaction.graphQlDetected)
+                displayGraphQlFields(transaction.graphQlOperationName, transaction.graphQlDetected, transaction.graphQlError)
                 path.text = "${transaction.method} ${transaction.getFormattedPath(encode = false)}"
                 host.text = transaction.host
                 timeStart.text = DateFormat.getTimeInstance().format(transaction.requestDate)
@@ -89,6 +90,8 @@ internal class TransactionAdapter internal constructor(
             }
 
             setStatusColor(transaction)
+
+
         }
 
         private fun setProtocolImage(resources: ProtocolResources) {
@@ -116,19 +119,34 @@ internal class TransactionAdapter internal constructor(
             }
             itemBinding.code.setTextColor(color)
             itemBinding.path.setTextColor(color)
+
+            val colorGql: Int = when {
+                !transaction.graphQlError.isNullOrBlank() -> colorError
+                (transaction.status === HttpTransaction.Status.Failed) -> colorError
+                (transaction.status === HttpTransaction.Status.Requested) -> colorRequested
+                (transaction.responseCode == null) -> colorGqlSuccess
+                (transaction.responseCode!! >= HttpsURLConnection.HTTP_INTERNAL_ERROR) -> color500
+                (transaction.responseCode!! >= HttpsURLConnection.HTTP_BAD_REQUEST) -> color400
+                (transaction.responseCode!! >= HttpsURLConnection.HTTP_MULT_CHOICE) -> color300
+                else -> colorGqlSuccess
+            }
+            itemBinding.graphqlIcon.imageTintList = ColorStateList.valueOf(colorGql)
+            itemBinding.graphqlPath.setTextColor(colorGql)
         }
     }
 }
 
 private fun ChuckerListItemTransactionBinding.displayGraphQlFields(
     graphQlOperationName: String?,
-    graphQLDetected: Boolean
+    graphQLDetected: Boolean,
+    graphQlError: String?
 ) {
     if (graphQLDetected) {
         graphqlIcon.visibility = View.VISIBLE
         graphqlPath.visibility = View.VISIBLE
-
-        graphqlPath.text = graphQlOperationName ?: root.resources.getString(R.string.chucker_graphql_operation_is_empty)
+        graphqlPath.text =  (graphQlOperationName ?: root.resources.getString(R.string.chucker_graphql_operation_is_empty)).let{
+            if(graphQlError.isNullOrBlank().not()) "! ! ! $it" else it
+        }
     } else {
         graphqlIcon.visibility = View.GONE
         graphqlPath.visibility = View.GONE

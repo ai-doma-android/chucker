@@ -18,7 +18,17 @@ internal class TransactionViewModel(transactionId: Long) : ViewModel() {
     val transactionTitle: LiveData<String> = RepositoryProvider.transaction()
         .getTransaction(transactionId)
         .combineLatest(encodeUrl) { transaction, encodeUrl ->
-            if (transaction != null) "${transaction.method} ${transaction.getFormattedPath(encode = encodeUrl)}" else ""
+            if (transaction != null) {
+                if(transaction.graphQlDetected) {
+                    if(transaction.graphQlError.isNullOrBlank()){
+                        "${transaction.graphQlOperationName}"
+                    } else {
+                        "! ! ! ${transaction.graphQlOperationName}"
+                    }
+                } else {
+                    "${transaction.method} ${transaction.getFormattedPath(encode = encodeUrl)}"
+                }
+            } else ""
         }
 
     val doesUrlRequireEncoding: LiveData<Boolean> = RepositoryProvider.transaction()

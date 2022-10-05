@@ -11,6 +11,7 @@ import androidx.room.PrimaryKey
 import com.chuckerteam.chucker.internal.support.FormatUtils
 import com.chuckerteam.chucker.internal.support.FormattedUrl
 import com.chuckerteam.chucker.internal.support.JsonConverter
+import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -56,6 +57,7 @@ internal class HttpTransaction(
     @ColumnInfo(name = "responseImageData") var responseImageData: ByteArray?,
     @ColumnInfo(name = "graphQlDetected") var graphQlDetected: Boolean = false,
     @ColumnInfo(name = "graphQlOperationName") var graphQlOperationName: String?,
+    @ColumnInfo(name = "graphQlError") var graphQlError: String?,
 ) {
 
     @Ignore
@@ -85,7 +87,8 @@ internal class HttpTransaction(
         responseHeadersSize = null,
         responseBody = null,
         responseImageData = null,
-        graphQlOperationName = null
+        graphQlOperationName = null,
+        graphQlError = null
     )
 
     enum class Status {
@@ -134,10 +137,18 @@ internal class HttpTransaction(
 
     val notificationText: String
         get() {
-            return when (status) {
-                Status.Failed -> " ! ! !  $method $path"
-                Status.Requested -> " . . .  $method $path"
-                else -> "$responseCode $method $path"
+            return if (!graphQlDetected) {
+                when (status) {
+                    Status.Failed -> " ! ! !  $method $path"
+                    Status.Requested -> " . . .  $method $path"
+                    else -> "$responseCode $method $path"
+                }
+            } else {
+                when (status) {
+                    Status.Failed -> " ! ! !  $method $path"
+                    Status.Requested -> " . . . gql $graphQlOperationName"
+                    else -> if(graphQlError.isNullOrBlank().not()){"! ! ! $responseCode gql $graphQlOperationName"} else {"$responseCode gql $graphQlOperationName"}
+                }
             }
         }
 
@@ -162,6 +173,25 @@ internal class HttpTransaction(
     fun setGraphQlOperationName(headers: Headers) {
         graphQlOperationName = toHttpHeaderList(headers)
             .find { it.name.lowercase().contains("operation-name") }?.value
+    }
+
+    fun obtainGraphQlErrorStringIfExist() {
+        try {
+            if (responseContentType?.contains("json", ignoreCase = true) != true) return
+
+            val json = try {
+                JsonParser.parseString(responseBody).asJsonObject
+            } catch (e: java.lang.Exception) {
+                null
+            }
+            val string = json?.getAsJsonArray("errors")?.map {
+                it.asJsonObject.get("message").asString
+            }?.joinToString(separator = "\n") { it }
+
+            graphQlError = string
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun getParsedRequestHeaders(): List<HttpHeader>? {
@@ -295,6 +325,7 @@ internal class HttpTransaction(
             (isResponseBodyEncoded == other.isResponseBodyEncoded) &&
             (responseImageData?.contentEquals(other.responseImageData ?: byteArrayOf()) != false) &&
             (graphQlOperationName == other.graphQlOperationName) &&
-            (graphQlDetected == other.graphQlDetected)
+            (graphQlDetected == other.graphQlDetected) &&
+            (graphQlError == other.graphQlError)
     }
 }

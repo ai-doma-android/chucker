@@ -95,38 +95,38 @@ internal class MainActivity :
             mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            handleNotificationsPermission()
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//            handleNotificationsPermission()
+//        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    private fun handleNotificationsPermission() {
-        when {
-            ContextCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED -> {
-                /* We have permission, all good */
-            }
-            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
-                Snackbar.make(
-                    mainBinding.root,
-                    applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
-                    Snackbar.LENGTH_LONG
-                ).setAction(applicationContext.getString(R.string.chucker_change)) {
-                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        data = Uri.fromParts("package", packageName, null)
-                    }.also { intent ->
-                        startActivity(intent)
-                    }
-                }.show()
-            }
-            else -> {
-                permissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
-        }
-    }
+//    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+//    private fun handleNotificationsPermission() {
+//        when {
+//            ContextCompat.checkSelfPermission(
+//                this, Manifest.permission.POST_NOTIFICATIONS
+//            ) == PackageManager.PERMISSION_GRANTED -> {
+//                /* We have permission, all good */
+//            }
+//            shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+//                Snackbar.make(
+//                    mainBinding.root,
+//                    applicationContext.getString(R.string.chucker_notifications_permission_not_granted),
+//                    Snackbar.LENGTH_LONG
+//                ).setAction(applicationContext.getString(R.string.chucker_change)) {
+//                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+//                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                        data = Uri.fromParts("package", packageName, null)
+//                    }.also { intent ->
+//                        startActivity(intent)
+//                    }
+//                }.show()
+//            }
+//            else -> {
+//                permissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
+//            }
+//        }
+//    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.chucker_transactions_list, menu)
