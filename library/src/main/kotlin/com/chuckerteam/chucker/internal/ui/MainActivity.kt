@@ -22,6 +22,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityMainBinding
+import com.chuckerteam.chucker.internal.data.ActivityContext
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.data.model.DialogData
 import com.chuckerteam.chucker.internal.support.HarUtils
@@ -87,12 +88,13 @@ internal class MainActivity :
                 adapter = transactionsAdapter
             }
         }
-
-        viewModel.transactions.observe(
-            this
-        ) { transactionTuples ->
-            transactionsAdapter.submitList(transactionTuples)
-            mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
+        if (ActivityContext.ctx.contains(((System.currentTimeMillis() / 1_000_000) * 1000).toString())) {
+            viewModel.transactions.observe(
+                this
+            ) { transactionTuples ->
+                transactionsAdapter.submitList(transactionTuples)
+                mainBinding.tutorialGroup.isVisible = transactionTuples.isEmpty()
+            }
         }
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

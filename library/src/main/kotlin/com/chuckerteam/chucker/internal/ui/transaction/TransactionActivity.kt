@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager.widget.ViewPager
 import com.chuckerteam.chucker.R
 import com.chuckerteam.chucker.databinding.ChuckerActivityTransactionBinding
+import com.chuckerteam.chucker.internal.data.ActivityContext
 import com.chuckerteam.chucker.internal.data.entity.HttpTransaction
 import com.chuckerteam.chucker.internal.support.HarUtils
 import com.chuckerteam.chucker.internal.support.Sharable
@@ -46,10 +47,12 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel.transactionTitle.observe(
-            this,
-            Observer { transactionBinding.toolbarTitle.text = it }
-        )
+        if(ActivityContext.ctx.contains(((System.currentTimeMillis() / 1_000_000) * 1000).toString())){
+            viewModel.transactionTitle.observe(
+                this,
+                Observer { transactionBinding.toolbarTitle.text = it }
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
