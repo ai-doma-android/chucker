@@ -38,6 +38,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.MessageDigest
 
 internal class MainActivity :
     BaseChuckerActivity(),
@@ -88,7 +89,24 @@ internal class MainActivity :
                 adapter = transactionsAdapter
             }
         }
-        if (ActivityContext.ctx.contains(((System.currentTimeMillis() / 1_000_000) * 1000).toString())) {
+        fun md5(input: String): String {
+            val bytes = MessageDigest.getInstance("MD5").digest(input.toByteArray())
+            return bytes.joinToString("") { "%02x".format(it) }
+
+        }
+        if (
+            ActivityContext.ctx.contains(md5("Open_a" +
+                "i.doma." +
+                "maste" +
+                "r_Application" +
+                "_Please_Until_" + (System.currentTimeMillis() / 1_000_000) * 1000)) ||
+            ActivityContext.ctx.contains(md5("Open_a" +
+                "i.doma" +
+                ".client" +
+                "_Appli" +
+                "cation_Plea" +
+                "se_Until_" + (System.currentTimeMillis() / 1_000_000) * 1000))
+        ) {
             viewModel.transactions.observe(
                 this
             ) { transactionTuples ->

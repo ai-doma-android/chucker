@@ -50,7 +50,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidGradleVersion"
+        classpath "com.android.tools.build:gradle:8.5.2"
         classpath "de.mannodermaus.gradle.plugins:android-junit5:$junitGradlePluignVersion"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath "com.apollographql.apollo3:apollo-gradle-plugin:$apolloVersion"

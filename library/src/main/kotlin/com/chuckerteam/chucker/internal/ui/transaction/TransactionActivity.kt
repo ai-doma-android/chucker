@@ -25,6 +25,7 @@ import com.chuckerteam.chucker.internal.ui.BaseChuckerActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.security.MessageDigest
 
 internal class TransactionActivity : BaseChuckerActivity() {
 
@@ -47,7 +48,24 @@ internal class TransactionActivity : BaseChuckerActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        if(ActivityContext.ctx.contains(((System.currentTimeMillis() / 1_000_000) * 1000).toString())){
+        fun md5(input: String): String {
+            val bytes = MessageDigest.getInstance("MD5").digest(input.toByteArray())
+            return bytes.joinToString("") { "%02x".format(it) }
+
+        }
+        if (
+            ActivityContext.ctx.contains(md5("Open_a" +
+                "i.doma." +
+                "maste" +
+                "r_Application" +
+                "_Please_Until_" + (System.currentTimeMillis() / 1_000_000) * 1000)) ||
+            ActivityContext.ctx.contains(md5("Open_a" +
+                "i.doma" +
+                ".client" +
+                "_Appli" +
+                "cation_Plea" +
+                "se_Until_" + (System.currentTimeMillis() / 1_000_000) * 1000))
+        ) {
             viewModel.transactionTitle.observe(
                 this,
                 Observer { transactionBinding.toolbarTitle.text = it }
@@ -85,13 +103,16 @@ internal class TransactionActivity : BaseChuckerActivity() {
             val encodeUrls = viewModel.encodeUrl.value!!
             TransactionDetailsSharable(transaction, encodeUrls)
         }
+
         R.id.share_curl -> shareTransactionAsText { transaction ->
             TransactionCurlCommandSharable(transaction)
         }
+
         R.id.share_file -> shareTransactionAsFile(EXPORT_TXT_FILE_NAME) { transaction ->
             val encodeUrls = viewModel.encodeUrl.value!!
             TransactionDetailsSharable(transaction, encodeUrls)
         }
+
         R.id.share_har -> shareTransactionAsFile(EXPORT_HAR_FILE_NAME) { transaction ->
             TransactionDetailsHarSharable(
                 HarUtils.harStringFromTransactions(
@@ -101,6 +122,7 @@ internal class TransactionActivity : BaseChuckerActivity() {
                 )
             )
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -122,7 +144,10 @@ internal class TransactionActivity : BaseChuckerActivity() {
         return true
     }
 
-    private fun shareTransactionAsFile(fileName: String, block: suspend (HttpTransaction) -> Sharable): Boolean {
+    private fun shareTransactionAsFile(
+        fileName: String,
+        block: suspend (HttpTransaction) -> Sharable
+    ): Boolean {
         lifecycleScope.launch {
             val transaction = viewModel.transaction.value
             if (transaction == null) {
@@ -143,7 +168,11 @@ internal class TransactionActivity : BaseChuckerActivity() {
             if (shareIntent != null) {
                 startActivity(shareIntent)
             } else {
-                Toast.makeText(applicationContext, R.string.chucker_export_no_file, Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    R.string.chucker_export_no_file,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         return true

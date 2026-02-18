@@ -9,7 +9,7 @@ wire {
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-
+    namespace "com.chuckerteam.chucker.sample"
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
